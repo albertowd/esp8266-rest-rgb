@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  description: Simple RGB color service control.
+  title: RGB Colors
+  version: 1.0.0
+servers:
+  - description: Test RGB light control service.
+    url: https://192.168.0.35/
+  - description: Couch RGB light control service.
+    url: https://couch-rgb.local/
+paths:
+  /:
+    get:
+      summary: Simple user interface.
+      operationId: handleRoot
+      responses:
+        200:
+          description: A simple page that shows the current LED status and let's you change a static color.
+          content:
+            text/plain; charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/RGB"
+    post:
+      summary: Set a static color to the service.
+      operationId: setColor
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/RGB"
+        required: true
+      responses:
+        201:
+          description: Set a static color to the service, changing all the connected LED strip to one color.
+          content:
+            text/plain; charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/RGB"
+        403:
+          description: Invalid arguments, do not repeat this request.
+          content:
+            text/plain; charset=UTF-8:
+              schema:
+                example: Invalid arguments, do not repeat.
+                type: string
+components:
+  schemas:
+    RGB:
+      description: A simple RGB color class.
+      properties:
+        b:
+          description: Blue color.
+          example: 255
+          maximum: 255
+          minimum: 0
+          type: integer
+        g:
+          description: Green color.
+          example: 255
+          maximum: 255
+          minimum: 0
+          type: integer
+        r:
+          description: Red color.
+          example: 255
+          maximum: 255
+          minimum: 0
+          type: integer
+      required:
+        - b
+        - g
+        - r
+      type: object
+    Error403:
+      description: Invalid arguments error.
+      example: Invalid arguments, do not repeat.
+      type: string
+    Error404:
+      description: File not found error.
+      example: Invalid arguments, do not repeat.
+      type: string
+    Error405:
+      description: Method not allowerd error.
+      example: Methos Not allowerd
+      type: string
