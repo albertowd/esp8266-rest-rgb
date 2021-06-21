@@ -13,7 +13,7 @@
 BearSSL::ESP8266WebServerSecure server(443);
 
 const String HTTP_DEFAULT_HEADERS[] = {
-  "Access-Control-Allow-Methods", "GET,POST",
+  "Access-Control-Allow-Methods", "GET,POST,OPTIONS",
   "Access-Control-Allow-Origin", "*"
 };
 
@@ -212,6 +212,16 @@ void setDefaultHeaders () {
 }
 
 /**
+ * Handles a OPTION request.
+ */
+void handle204() {
+  // Headers already defined by the handler.
+  server.send(204);
+  alertLEDAnimation();
+  Serial.printf("204 - Handled.\n");
+}
+
+/**
  * Handles a invalid arguments request.
  */
 void handle403() {
@@ -264,7 +274,15 @@ void handleRoot() {
   digitalWrite(LED_PIN_NODE, HIGH);
 
   int requestMethod = server.method();
-  if(HTTP_POST == requestMethod) {
+  if (HTTP_GET == requestMethod) {
+    rgbOutput.replace("%blue%", String(getBlue()));
+    rgbOutput.replace("%green%", String(getGreen()));
+    rgbOutput.replace("%red%", String(getRed()));
+    server.send(200, "text/plain; charset=UTF-8", rgbOutput);
+    Serial.printf("200 - Handled.\n");
+  } else if (HTTP_OPTION == requestMethod) {
+    handle204();
+  } if(HTTP_POST == requestMethod) {
     Serial.printf("POST arguments: %s.\n", server.arg("plain").c_str());
     if (server.hasArg("r") || server.hasArg("g") || server.hasArg("b")) {
       bool success(true);
@@ -283,12 +301,6 @@ void handleRoot() {
     } else {
       handle403();
     }
-  } else if (HTTP_GET == requestMethod) {
-    rgbOutput.replace("%blue%", String(getBlue()));
-    rgbOutput.replace("%green%", String(getGreen()));
-    rgbOutput.replace("%red%", String(getRed()));
-    server.send(200, "text/plain; charset=UTF-8", rgbOutput);
-    Serial.printf("200 - Handled.\n");
   } else {
     handle405();
   }
