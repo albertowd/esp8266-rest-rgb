@@ -280,7 +280,7 @@ void handleRoot() {
     rgbOutput.replace("%red%", String(getRed()));
     server.send(200, "text/plain; charset=UTF-8", rgbOutput);
     Serial.printf("200 - Handled.\n");
-  } else if (HTTP_OPTION == requestMethod) {
+  } else if (HTTP_OPTIONS == requestMethod) {
     handle204();
   } if(HTTP_POST == requestMethod) {
     Serial.printf("POST arguments: %s.\n", server.arg("plain").c_str());
