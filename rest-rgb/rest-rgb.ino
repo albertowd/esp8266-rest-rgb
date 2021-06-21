@@ -206,7 +206,7 @@ void alertLEDAnimation () {
  */
 void setDefaultHeaders () {
   const unsigned int headerMaxCount(sizeof(HTTP_DEFAULT_HEADERS) / sizeof(HTTP_DEFAULT_HEADERS[0]));
-  for (unsigned int headerIndex(0); headerIndex < headerMaxCount; headerIndex += 1) {
+  for (unsigned int headerIndex(0); headerIndex < headerMaxCount; headerIndex += 2) {
     server.sendHeader(HTTP_DEFAULT_HEADERS[headerIndex], HTTP_DEFAULT_HEADERS[headerIndex + 1]);
   }
 }
@@ -275,7 +275,7 @@ void handleRoot() {
         rgbOutput.replace("%blue%", String(getBlue()));
         rgbOutput.replace("%green%", String(getGreen()));
         rgbOutput.replace("%red%", String(getRed()));
-        server.send(201, "text/plain; charset=UTF-8", rgbOutput);
+        server.send(201, "application/x-www-form-urlencoded", rgbOutput);
         Serial.printf("201 - Handled.\n");
       } else {
         handle403();
@@ -287,7 +287,7 @@ void handleRoot() {
     rgbOutput.replace("%blue%", String(getBlue()));
     rgbOutput.replace("%green%", String(getGreen()));
     rgbOutput.replace("%red%", String(getRed()));
-    server.send(200, "text/plain; charset=UTF-8", rgbOutput);
+    server.send(200, "application/x-www-form-urlencoded", rgbOutput);
     Serial.printf("200 - Handled.\n");
   } else {
     handle405();
