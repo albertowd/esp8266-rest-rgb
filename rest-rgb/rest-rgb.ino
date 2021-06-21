@@ -13,8 +13,8 @@
 BearSSL::ESP8266WebServerSecure server(443);
 
 const String HTTP_DEFAULT_HEADERS[] = {
-  "Access-Control-Allow-Origin", "*",
-  "Content-Disposition", "inline"
+  "Access-Control-Allow-Methods", "GET,POST",
+  "Access-Control-Allow-Origin", "*"
 };
 
 const char serverCert[] PROGMEM = R"EOF(
@@ -275,7 +275,7 @@ void handleRoot() {
         rgbOutput.replace("%blue%", String(getBlue()));
         rgbOutput.replace("%green%", String(getGreen()));
         rgbOutput.replace("%red%", String(getRed()));
-        server.send(201, "application/x-www-form-urlencoded", rgbOutput);
+        server.send(201, "text/plain; charset=UTF-8", rgbOutput);
         Serial.printf("201 - Handled.\n");
       } else {
         handle403();
@@ -287,7 +287,7 @@ void handleRoot() {
     rgbOutput.replace("%blue%", String(getBlue()));
     rgbOutput.replace("%green%", String(getGreen()));
     rgbOutput.replace("%red%", String(getRed()));
-    server.send(200, "application/x-www-form-urlencoded", rgbOutput);
+    server.send(200, "text/plain; charset=UTF-8", rgbOutput);
     Serial.printf("200 - Handled.\n");
   } else {
     handle405();
